@@ -18,14 +18,14 @@ export default function NewTweet() {
         }
 
         fetch('/api/tweet', {
-            body: JSON.stringify({
-              content,
-            }),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            method: 'POST',
-          })
+          body: JSON.stringify({
+            content,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+        })
       }}
     >
       <div className='flex'>
