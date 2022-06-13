@@ -7,6 +7,7 @@ export default async function handler(req, res) {
   }
 
   const session = await getSession({ req })
+  if (!session) return res.status(401).json({ message: 'Not logged in' })
 
   const user = await prisma.user.findUnique({
     where: {
@@ -14,8 +15,10 @@ export default async function handler(req, res) {
     },
   })
 
+  if (!user) return res.status(401).json({ message: 'User not found' })
+
   if (req.method === 'POST') {
-    await prisma.tweet.create({
+    const tweet = await prisma.tweet.create({
       data: {
         content: req.body.content,
         parent: req.body.parent || null,
@@ -24,13 +27,24 @@ export default async function handler(req, res) {
         },
       },
     })
+
+    const tweetWithAuthorData = await prisma.tweet.findUnique({
+      where: {
+        id: tweet.id,
+      },
+      include: {
+        author: true,
+      },
+    })
+
+    res.json(tweetWithAuthorData)
+
     res.end()
-    return
   }
 
   if (req.method === 'DELETE') {
     const id = req.body.id
-
+    console.log(id)
     const tweet = await prisma.tweet.findUnique({
       where: {
         id,
