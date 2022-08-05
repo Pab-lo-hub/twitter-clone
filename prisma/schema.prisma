@@ -24,6 +24,7 @@ model User {
   tweets        Tweet[]
 }
 
+
 model VerificationToken {
   identifier String
   token      String   @unique
